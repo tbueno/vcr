@@ -156,64 +156,7 @@ HTTP_LIBRARY_ADAPTERS['curb'] = Module.new do
   end
 end
 
-HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
-  def self.http_library_name; "Typhoeus"; end
-
-  def get_body_string(response)
-    response.body
-  end
-  alias get_body_object get_body_string
-
-  def get_header(header_key, response)
-    # Due to https://github.com/typhoeus/typhoeus/commit/256c95473d5d40d7ec2f5db603687323ddd73689
-    # headers are now downcased.
-    # ...except when they're not.  I'm not 100% why (I haven't had time to dig into it yet)
-    # but in some situations the headers aren't downcased.  I think it has to do with playback; VCR
-    # isn't sending the headers in downcased to typhoeus. It gets complicated with the interaction
-    # w/ WebMock, and the fact that webmock normalizes headers in a different fashion.
-    #
-    # For now this hack works.
-    response.headers.fetch(header_key.downcase) { response.headers[header_key] }
-  end
-
-  def make_http_request(method, url, body = nil, headers = {})
-    request = Typhoeus::Request.new(url, :method => method, :body => body, :headers => headers)
-    request.run
-    request.response
-  end
-
-  def normalize_request_headers(headers)
-    headers.merge("User-Agent"=>["Typhoeus - https://github.com/typhoeus/typhoeus"])
-  end
-end
-
-HTTP_LIBRARY_ADAPTERS['typhoeus 0.4'] = Module.new do
-  def self.http_library_name; "Typhoeus"; end
-
-  def get_body_string(response)
-    response.body
-  end
-  alias get_body_object get_body_string
-
-  def get_header(header_key, response)
-    response.headers_hash[header_key]
-  end
-
-  def make_http_request(method, url, body = nil, headers = {})
-    Typhoeus::Request.send(method, url, :body => body, :headers => headers)
-  end
-
-  def normalize_request_headers(headers)
-    headers
-  end
-end
-
-%w[ net_http typhoeus patron ].each do |_faraday_adapter|
-  if _faraday_adapter == 'typhoeus' &&
-     defined?(::Typhoeus::VERSION) &&
-     ::Typhoeus::VERSION.to_f >= 0.5
-    require 'typhoeus/adapters/faraday'
-  end
+%w[ net_http patron ].each do |_faraday_adapter|
 
   HTTP_LIBRARY_ADAPTERS["faraday (w/ #{_faraday_adapter})"] = Module.new do
     class << self; self; end.class_eval do

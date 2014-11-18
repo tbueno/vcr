@@ -1,5 +1,3 @@
-require 'typhoeus'
-
 module MonkeyPatches
   extend self
 
@@ -16,29 +14,12 @@ module MonkeyPatches
 
   def enable!(scope)
     case scope
-      when :fakeweb
-        realias_net_http :with_fakeweb
-        enable!(:vcr) # fakeweb hook relies upon VCR's Net::HTTP monkey patch
       when :webmock
         ::WebMock.reset!
         ::WebMock::HttpLibAdapters::NetHttpAdapter.enable!
         ::WebMock::HttpLibAdapters::TyphoeusAdapter.enable! if defined?(::Typhoeus)
         $original_webmock_callbacks.each do |cb|
           ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
-        end
-      when :typhoeus
-        $original_typhoeus_global_hooks.each do |hook|
-          ::Typhoeus.on_complete << hook
-        end
-        ::Typhoeus.before.clear
-        $original_typhoeus_before_hooks.each do |hook|
-          ::Typhoeus.before << hook
-        end
-      when :typhoeus_0_4
-        ::Typhoeus::Hydra.global_hooks = $original_typhoeus_global_hooks
-        ::Typhoeus::Hydra.stub_finders.clear
-        $original_typhoeus_stub_finders.each do |finder|
-          ::Typhoeus::Hydra.stub_finders << finder
         end
       when :vcr
         realias Net::HTTP, :request, :with_vcr
@@ -128,18 +109,6 @@ unless RUBY_INTERPRETER == :jruby
   require 'curb'
 end
 
-if defined?(::Typhoeus.before)
-  require 'vcr/library_hooks/typhoeus'
-  $typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
-  $original_typhoeus_global_hooks = Typhoeus.on_complete.dup
-  $original_typhoeus_before_hooks = Typhoeus.before.dup
-elsif defined?(::Typhoeus::Hydra.global_hooks)
-  require 'vcr/library_hooks/typhoeus'
-  $typhoeus_0_4_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].first
-  $typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
-  $original_typhoeus_global_hooks = Typhoeus::Hydra.global_hooks.dup
-  $original_typhoeus_stub_finders = Typhoeus::Hydra.stub_finders.dup
-end
 
 # All Net::HTTP monkey patches have now been loaded, so capture the
 # appropriate method definitions so we can disable them later.
@@ -156,7 +125,7 @@ $original_webmock_callbacks = ::WebMock::CallbackRegistry.callbacks
 MonkeyPatches.disable_all!
 
 RSpec.configure do |config|
-  [:fakeweb, :webmock, :vcr, :typhoeus, :typhoeus_0_4].each do |scope|
+  [:fakeweb, :webmock, :vcr].each do |scope|
     config.before(:all, :with_monkey_patches => scope) { MonkeyPatches.enable!(scope) }
     config.after(:all,  :with_monkey_patches => scope) { MonkeyPatches.disable_all!   }
   end

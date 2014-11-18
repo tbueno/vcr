@@ -69,7 +69,7 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
     end
   end
 
-  http_libs = %w[net/http patron httpclient em-http-request curb typhoeus]
+  http_libs = %w[net/http patron httpclient em-http-request curb]
   http_libs.delete('patron') if RUBY_VERSION == '1.8.7'
   http_libs.each do |lib|
     other = []
