@@ -84,9 +84,6 @@ module MonkeyPatches
         end
         alias_name = :"#{method}_without_monkeypatches"
       else
-        if monkeypatch_methods.size == 0
-          raise "No monkey patch methods have been defined for #{method}"
-        end
         alias_name = :"#{method}_with_monkeypatches"
       end
 
@@ -143,9 +140,6 @@ elsif defined?(::Typhoeus::Hydra.global_hooks)
   $original_typhoeus_global_hooks = Typhoeus::Hydra.global_hooks.dup
   $original_typhoeus_stub_finders = Typhoeus::Hydra.stub_finders.dup
 end
-
-require 'vcr/library_hooks/fakeweb'
-$fakeweb_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
 
 # All Net::HTTP monkey patches have now been loaded, so capture the
 # appropriate method definitions so we can disable them later.
