@@ -68,13 +68,6 @@ describe VCR, 'deprecations', :disable_warnings do
     end
   end
 
-  describe "VCR::Middleware::Faraday" do
-    it 'prints a deprecation warning when passed a block' do
-      expect(Kernel).to receive(:warn).with(/Passing a block .* is deprecated/)
-      VCR::Middleware::Faraday.new(double) { }
-    end
-  end
-
   describe "VCR::RSpec::Macros" do
     it 'prints a deprecation warning' do
       expect(Kernel).to receive(:warn).with(/VCR::RSpec::Macros is deprecated/)

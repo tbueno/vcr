@@ -24,10 +24,8 @@ gem 'cucumber', '>= 1.1.4'
 gem 'aruba', '>= 0.5'
 gem 'rspec', '~> 3.1'
 
-gem 'fakeweb', '>= 1.3.0'
 gem 'webmock', '>= 1.14'
 
-gem 'faraday', '>= 0.8'
 gem 'httpclient', '>= 2.2'
 
 # 0.6.2 cannot install on 1.8.7:
@@ -41,7 +39,6 @@ gem 'json', '>= 1.6.5'
 gem 'simplecov', '>= 0.5.3'
 
 gem 'redis', '>= 2.2.2'
-gem 'typhoeus', '>= 0.6'
 
 gem 'patron', '>= 0.4.15', :platform => :ruby
 gem 'em-http-request', '>= 1.0.2', :platform => :ruby
