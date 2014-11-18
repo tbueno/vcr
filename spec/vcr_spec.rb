@@ -223,16 +223,6 @@ describe VCR do
     end
   end
 
-  describe '.cucumber_tags' do
-    it 'yields a cucumber tags object' do
-      yielded_object = nil
-      VCR.cucumber_tags do |obj|
-        yielded_object = obj
-      end
-      expect(yielded_object).to be_instance_of(VCR::CucumberTags)
-    end
-  end
-
   describe '.record_http_interaction' do
     before(:each) { allow(VCR).to receive(:current_cassette).and_return(current_cassette) }
     let(:interaction) { double(:request => double) }

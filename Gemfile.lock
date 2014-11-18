@@ -117,7 +117,6 @@ PLATFORMS
 DEPENDENCIES
   appraisal
   aruba (>= 0.5)
-  cucumber (>= 1.1.4)
   curb (>= 0.8.0)
   debugger
   em-http-request (>= 1.0.2)

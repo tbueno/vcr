@@ -20,7 +20,6 @@ end
 
 gem 'rake', '>= 0.9.2'
 
-gem 'cucumber', '>= 1.1.4'
 gem 'aruba', '>= 0.5'
 gem 'rspec', '~> 3.1'
 

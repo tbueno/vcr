@@ -22,7 +22,6 @@ module VCR
 
   extend self
 
-  autoload :CucumberTags,       'vcr/test_frameworks/cucumber'
   autoload :InternetConnection, 'vcr/util/internet_connection'
 
   module RSpec
