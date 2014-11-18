@@ -41,7 +41,7 @@ module VCRHelpers
       # Some HTTP libraries include an extra space ("OK " instead of "OK")
       i.response.status.message = i.response.status.message.strip
 
-      if @scenario_parameters.to_s =~ /excon|faraday/
+      if @scenario_parameters.to_s =~ /faraday/
         # Excon/Faraday do not expose the status message or http version,
         # so we have no way to record these attributes.
         i.response.status.message = nil

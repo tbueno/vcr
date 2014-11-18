@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'support/shared_example_groups/excon'
 
 describe "WebMock hook", :with_monkey_patches => :webmock do
   after(:each) do
@@ -70,11 +69,10 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
     end
   end
 
-  http_libs = %w[net/http patron httpclient em-http-request curb typhoeus excon]
+  http_libs = %w[net/http patron httpclient em-http-request curb typhoeus]
   http_libs.delete('patron') if RUBY_VERSION == '1.8.7'
   http_libs.each do |lib|
     other = []
-    other << :status_message_not_exposed if lib == 'excon'
     it_behaves_like 'a hook into an HTTP library', :webmock, lib, *other do
       if lib == 'net/http'
         def normalize_request_headers(headers)
@@ -112,7 +110,5 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
       end
     end
   end
-
-  it_behaves_like "Excon streaming"
 end
 

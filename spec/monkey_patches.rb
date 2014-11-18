@@ -23,7 +23,6 @@ module MonkeyPatches
         ::WebMock.reset!
         ::WebMock::HttpLibAdapters::NetHttpAdapter.enable!
         ::WebMock::HttpLibAdapters::TyphoeusAdapter.enable! if defined?(::Typhoeus)
-        ::WebMock::HttpLibAdapters::ExconAdapter.enable! if defined?(::Excon)
         $original_webmock_callbacks.each do |cb|
           ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
         end
@@ -41,8 +40,6 @@ module MonkeyPatches
         $original_typhoeus_stub_finders.each do |finder|
           ::Typhoeus::Hydra.stub_finders << finder
         end
-      when :excon
-        VCR::LibraryHooks::Excon.configure_middleware
       when :vcr
         realias Net::HTTP, :request, :with_vcr
       else raise ArgumentError.new("Unexpected scope: #{scope}")
@@ -55,7 +52,6 @@ module MonkeyPatches
     if defined?(::WebMock::HttpLibAdapters)
       ::WebMock::HttpLibAdapters::NetHttpAdapter.disable!
       ::WebMock::HttpLibAdapters::TyphoeusAdapter.disable! if defined?(::Typhoeus)
-      ::WebMock::HttpLibAdapters::ExconAdapter.disable! if defined?(::Excon)
       ::WebMock::CallbackRegistry.reset
       ::WebMock::StubRegistry.instance.request_stubs = []
     end
@@ -66,11 +62,6 @@ module MonkeyPatches
     elsif defined?(::Typhoeus::Hydra)
       ::Typhoeus::Hydra.clear_global_hooks
       ::Typhoeus::Hydra.stub_finders.clear
-    end
-
-    if defined?(::Excon)
-      ::Excon.defaults[:middlewares].delete(VCR::Middleware::Excon::Request)
-      ::Excon.defaults[:middlewares].delete(VCR::Middleware::Excon::Response)
     end
   end
 
@@ -167,14 +158,11 @@ MonkeyPatches.disable_all!
 require 'vcr/library_hooks/webmock'
 $original_webmock_callbacks = ::WebMock::CallbackRegistry.callbacks
 
-require 'vcr/library_hooks/excon'
-$excon_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
-
 # disable all by default; we'll enable specific ones when we need them
 MonkeyPatches.disable_all!
 
 RSpec.configure do |config|
-  [:fakeweb, :webmock, :vcr, :typhoeus, :typhoeus_0_4, :excon].each do |scope|
+  [:fakeweb, :webmock, :vcr, :typhoeus, :typhoeus_0_4].each do |scope|
     config.before(:all, :with_monkey_patches => scope) { MonkeyPatches.enable!(scope) }
     config.after(:all,  :with_monkey_patches => scope) { MonkeyPatches.disable_all!   }
   end

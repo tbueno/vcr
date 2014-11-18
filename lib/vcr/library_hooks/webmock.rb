@@ -42,23 +42,12 @@ module VCR
             nil
         end
 
-        if defined?(::Excon)
-          # @private
-          def request_headers_for(webmock_request)
-            return nil unless webmock_request.headers
 
-            # WebMock hooks deeply into a Excon at a place where it manually adds a "Host"
-            # header, but this isn't a header we actually care to store...
-            webmock_request.headers.dup.tap do |headers|
-              headers.delete("Host")
-            end
-          end
-        else
-          # @private
-          def request_headers_for(webmock_request)
-            webmock_request.headers
-          end
+        # @private
+        def request_headers_for(webmock_request)
+          webmock_request.headers
         end
+
 
         def typed_request_for(webmock_request, remove = false)
           if webmock_request.instance_variables.find { |v| v.to_sym == :@__typed_vcr_request }

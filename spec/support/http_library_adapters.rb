@@ -208,29 +208,6 @@ HTTP_LIBRARY_ADAPTERS['typhoeus 0.4'] = Module.new do
   end
 end
 
-HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
-  def self.http_library_name; "Excon"; end
-
-  def get_body_string(response)
-    response.body
-  end
-  alias get_body_object get_body_string
-
-  def get_header(header_key, response)
-    response.headers[header_key]
-  end
-
-  def make_http_request(method, url, body = nil, headers = {})
-    # There are multiple ways to use Excon but this is how fog (the main user of excon) uses it:
-    # https://github.com/fog/fog/blob/v1.1.1/lib/fog/aws/rds.rb#L139-147
-    Excon.new(url).request(:method => method.to_s.upcase, :body => body, :headers => headers)
-  end
-
-  def normalize_request_headers(headers)
-    headers.merge('User-Agent' => [Excon::USER_AGENT])
-  end
-end
-
 %w[ net_http typhoeus patron ].each do |_faraday_adapter|
   if _faraday_adapter == 'typhoeus' &&
      defined?(::Typhoeus::VERSION) &&

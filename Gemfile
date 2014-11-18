@@ -29,7 +29,6 @@ gem 'webmock', '>= 1.14'
 
 gem 'faraday', '>= 0.8'
 gem 'httpclient', '>= 2.2'
-gem 'excon', '>= 0.22'
 
 # 0.6.2 cannot install on 1.8.7:
 # https://github.com/travisjeffery/timecop/commit/cec7352a6655cceb0216db53eea630354ee63e3f
