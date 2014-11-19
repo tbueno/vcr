@@ -54,12 +54,6 @@ module VCR
         end if ''.respond_to?(:encoding)
       end
 
-      it_behaves_like "a serializer", :syck,  "yml",  :lazily_loaded do
-        it_behaves_like "encoding error handling", :syck, ArgumentError do
-          let(:string) { "\xFA".force_encoding("UTF-8") }
-        end if ''.respond_to?(:encoding)
-      end
-
       it_behaves_like "a serializer", :psych, "yml",  :lazily_loaded do
         it_behaves_like "encoding error handling", :psych, ArgumentError do
           let(:string) { "\xFA".force_encoding("UTF-8") }

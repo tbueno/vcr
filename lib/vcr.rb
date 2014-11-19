@@ -95,7 +95,7 @@ module VCR
   #  cassette and to completely ignore any cassettes in the cassettes stack.
   #  Defaults to false.
   # @option options :serialize_with [Symbol] Which serializer to use.
-  #  Valid values are :yaml, :syck, :psych, :json or any registered
+  #  Valid values are :yaml, :psych, :json or any registered
   #  custom serializer. Defaults to :yaml.
   # @option options :persist_with [Symbol] Which cassette persister to
   #  use. Defaults to :file_system. You can also register and use a

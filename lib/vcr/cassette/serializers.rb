@@ -3,7 +3,6 @@ module VCR
     # Keeps track of the cassette serializers in a hash-like object.
     class Serializers
       autoload :YAML,  'vcr/cassette/serializers/yaml'
-      autoload :Syck,  'vcr/cassette/serializers/syck'
       autoload :Psych, 'vcr/cassette/serializers/psych'
       autoload :JSON,  'vcr/cassette/serializers/json'
 
@@ -21,7 +20,6 @@ module VCR
         @serializers.fetch(name) do |_|
           @serializers[name] = case name
             when :yaml  then YAML
-            when :syck  then Syck
             when :psych then Psych
             when :json  then JSON
             else raise ArgumentError.new("The requested VCR cassette serializer (#{name.inspect}) is not registered.")

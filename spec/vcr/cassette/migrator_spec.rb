@@ -114,10 +114,6 @@ EOF
   end if RUBY_PLATFORM == 'java'
 
   # Use syck on all rubies for consistent results...
-  before(:each) do
-    YAML::ENGINE.yamler = 'syck' if defined?(YAML::ENGINE)
-  end
-
   after(:each) do
     YAML::ENGINE.yamler = 'psych' if defined?(YAML::ENGINE)
   end
